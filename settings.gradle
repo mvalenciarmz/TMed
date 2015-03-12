@@ -1,0 +1,2 @@
+include ':app', ':UITableView'
+project(':UITableView').projectDir = new File('libs/UITableView')

@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">TMed</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_masPersona">Registrar nueva persona</string>
+    <string name="title_masGastos">Registrar gastos</string>
+    <string name="title_activity_alta_persona">AltaPersonaActivity</string>
+    <string name="title_back">Regresar</string>
+    <string name="title_guardar">Guardar</string>
+
+    <string-array name="horario">
+        <item>Turno Matutino</item>
+        <item>Turno Vespertino</item>
+    </string-array>
+
+    <string-array name="sexo">
+        <item>Sexo Masculino</item>
+        <item>Sexo Femenino</item>
+    </string-array>
+
+</resources>
