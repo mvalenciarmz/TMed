@@ -1,0 +1,34 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="mvalenciarmz.com.tarjetamedica.EventosActivity">
+
+    <item
+        android:id="@+id/editarPersona"
+        android:icon="@drawable/edit"
+        android:orderInCategory="100"
+        android:title="Editar"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/addEvento"
+        android:icon="@drawable/addevento"
+        android:orderInCategory="100"
+        android:title="Nuevo"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/tipoEvento"
+        android:icon="@drawable/library"
+        android:orderInCategory="100"
+        android:title="Eventos"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/filtrarEventos"
+        android:icon="@drawable/ver"
+        android:orderInCategory="100"
+        android:title="Filtrar"
+        app:showAsAction="always"/>
+
+</menu>

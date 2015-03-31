@@ -18,5 +18,7 @@
         <item>Sexo Masculino</item>
         <item>Sexo Femenino</item>
     </string-array>
+    <string name="title_activity_eventos">EventosActivity</string>
+    <string name="title_activity_alta_evento">AltaEventoActivity</string>
 
 </resources>

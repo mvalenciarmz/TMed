@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/masPersona"
-        android:icon="@drawable/adduser"
+        android:icon="@drawable/addperson"
         android:orderInCategory="100"
         android:title="@string/title_masPersona"
         app:showAsAction="always"/>
@@ -16,5 +16,56 @@
         android:orderInCategory="100"
         android:title="@string/title_masGastos"
         app:showAsAction="always"/>
+
+    <item
+        android:title="Search Option"
+        android:id="@+id/menu_search_option"
+        android:showAsAction="always">
+        <menu>
+            <group>
+                <item
+                    android:id="@+id/menuSearchFilmEpisode"
+                    android:title="Episode"/>
+                <item
+                    android:id="@+id/menuSearchActor"
+                    android:title="Actor"/>
+                <item
+                    android:id="@+id/menuSearchDirector"
+                    android:title="Director"/>
+            </group>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/masGasto1s"
+        android:icon="@drawable/masgastos"
+        android:orderInCategory="100"
+        android:title="@string/title_masGastos"
+        app:showAsAction="always">
+    <menu>
+    <group>
+        <item
+            android:title="menu1"
+            android:enabled="false"
+            android:checkable="false"/>
+        <item
+            android:title="opt1"/>
+        <item
+            android:title="opt2"/>
+        <item
+            android:title="opt3"/>
+    </group>
+    <group>
+        <item
+            android:title="menu2"
+            android:enabled="false"
+            android:checkable="false"/>
+        <item
+            android:title="opt4"/>
+        <item
+            android:title="opt5"/>
+    </group>
+    </menu>
+</item>
 
 </menu>

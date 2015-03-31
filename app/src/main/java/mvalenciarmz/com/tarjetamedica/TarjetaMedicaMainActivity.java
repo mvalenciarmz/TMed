@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.ArrayList;
+
 import br.com.dina.ui.widget.UITableView;
 
 
@@ -17,6 +19,10 @@ public class TarjetaMedicaMainActivity extends ActionBarActivity {
 
     // Para el manejo de la base de datos ...
     private DBManager dbManager;
+
+    // Para mantener un array con los datos que se están mostrando en la tabla
+    private ArrayList<String> nombreArrayList = new ArrayList<String>();
+    private ArrayList<String> idArrayList = new ArrayList<String>();
 
     // Definimos el tableview
     UITableView tableView;
@@ -53,8 +59,13 @@ public class TarjetaMedicaMainActivity extends ActionBarActivity {
 
                 String nombre = cursor.getString(1).trim()  + " " + cursor.getString(2).trim() + " " + cursor.getString(3);
                 String numSegSocial = cursor.getString(4);
+                String id = cursor.getString(0);
 
-                tableView.addBasicItem( R.drawable.agenda1, nombre, numSegSocial);
+                // Guardamos en un Arraylist los datos para saber que dato específico seleccionaron
+                nombreArrayList.add( cursor.getString(1).trim() );
+                idArrayList.add( id );
+
+                tableView.addBasicItem( R.drawable.tarjetarosa, nombre, numSegSocial);
 
             } while( cursor.moveToNext() );
         }
@@ -68,8 +79,17 @@ public class TarjetaMedicaMainActivity extends ActionBarActivity {
 
         @Override
         public void onClick(int index) {
-            if(index == 0) {
-            }
+
+            // Manejo de variables globales:
+            TMed miApp = ( (TMed)getApplicationContext() );
+
+            miApp.setNombreActual( nombreArrayList.get(index) );
+            miApp.setIdActual( idArrayList.get(index) );
+
+            // Lanzamos la actividad
+            Intent i = new Intent(TarjetaMedicaMainActivity.this, EventosActivity.class);
+            startActivity(i);
+
         }
 
     }
