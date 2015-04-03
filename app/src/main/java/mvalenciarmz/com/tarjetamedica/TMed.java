@@ -11,7 +11,7 @@ public class TMed extends Application {
     private String idActual;
     private String nombreActual;
 
-    private String idEventoActual;
+    private String idServicioActual;
     private String fechaEventoActual;
     private String horaEventoActual;
 
@@ -29,10 +29,10 @@ public class TMed extends Application {
         this.nombreActual = nombreActual;
     }
 
-    public String getIdEventoActual() {
-        return idEventoActual;
+    public String getIdServicioActual() {
+        return idServicioActual;
     }
-    public void setIdEventoActual( String idEventoActual ) { this.idEventoActual = idEventoActual; }
+    public void setIdServicioActual( String idServicioActual ) { this.idServicioActual = idServicioActual; }
 
     public String getFechaEventoActual() { return fechaEventoActual; }
     public void setFechaEventoActual( String fechaEventoActual ) { this.fechaEventoActual = fechaEventoActual; }

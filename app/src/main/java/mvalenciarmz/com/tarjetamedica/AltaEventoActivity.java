@@ -3,6 +3,7 @@ package mvalenciarmz.com.tarjetamedica;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
@@ -27,7 +29,10 @@ import java.util.Locale;
 public class AltaEventoActivity extends ActionBarActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
     // Para saber si estamos en un cambio (UPDATE) o en una alta (INSERT)
-    private String idEvento;
+    private String idPersona;
+    private String idServicio;
+    private String fechaEvento;
+    private String horaEvento;
 
     // Para el control que permite seleccionar una fecha
     private Calendar calendar;
@@ -50,15 +55,28 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
     private EditText txtEvento;
     private EditText txtLugar;
     private EditText txtObservaciones;
+    private EditText txtResultadoEvento;
+    private Spinner  txtStatus;
+
+    private TextView lblServicio;
+    private TextView lblEvento;
+    private TextView lblLugar;
+    private TextView lblComentarios;
+    private TextView lblResultadoEvento;
+    private TextView lblStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alta_evento);
 
-        // Obtenemos el id del evento actual ( si es una alta, valdrá 999999 )
+        // Obtenemos el id del servicio actual ( si es una alta, valdrá 999999 )
         TMed miApp = ( (TMed)getApplicationContext() );
-        idEvento  = miApp.getIdEventoActual();
+        idPersona = miApp.getIdActual();
+        idServicio  = miApp.getIdServicioActual();
+        fechaEvento = miApp.getFechaEventoActual();
+        horaEvento = miApp.getHoraEventoActual();
+
 
 
         // Para el control que permite seleccionar una fecha
@@ -78,6 +96,16 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
         txtEvento   = (EditText) findViewById(R.id.evento);
         txtLugar    = (EditText) findViewById(R.id.lugar);
         txtObservaciones = (EditText) findViewById(R.id.observaciones);
+        txtResultadoEvento = (EditText) findViewById(R.id.resultadoEvento);
+        txtStatus = (Spinner) findViewById(R.id.status);
+
+        lblServicio = (TextView) findViewById(R.id.lblServicio);
+        lblEvento = (TextView) findViewById(R.id.lblDescripcionEvento);
+        lblLugar = (TextView) findViewById(R.id.lblLugar);
+        lblComentarios = (TextView) findViewById(R.id.lblComentarios);
+        lblResultadoEvento = (TextView) findViewById(R.id.lblResultadoEvento);
+        lblStatus = (TextView) findViewById(R.id.lblStatus);
+
 
         // Para la interacción con la base de datos
         dbManager = new DBManager(this);
@@ -87,9 +115,26 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
         cargaServicios();
 
         // Si trae un id Evento entonces es un cambio y hay que cargar sus datos
-        if ( idEvento != 999999 ) {
+        if ( idServicio != "999999" ) {
             cargaDatosEvento();
+            txtResultadoEvento.setVisibility(View.VISIBLE);
+            txtStatus.setVisibility(View.VISIBLE);
+            lblResultadoEvento.setVisibility(View.VISIBLE);
+            lblStatus.setVisibility(View.VISIBLE);
+        // Si es una alta, ocultamos el status (ya que en alta será PENDIENTE) y el resultado del evento (ya que aún no se produce)
+        } else {
+            txtResultadoEvento.setVisibility(View.GONE);
+            txtStatus.setVisibility(View.GONE);
+            lblResultadoEvento.setVisibility(View.GONE);
+            lblStatus.setVisibility(View.GONE);
         }
+
+        lblServicio.setTextColor(Color.BLUE);
+        lblEvento.setTextColor(Color.BLUE);
+        lblLugar.setTextColor(Color.BLUE);
+        lblComentarios.setTextColor(Color.BLUE);
+        lblResultadoEvento.setTextColor(Color.BLUE);
+        lblStatus.setTextColor(Color.BLUE);
 
     }
 
@@ -104,31 +149,27 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // Obtenemos el id actual usando variables globales
-        TMed miApp = ( (TMed)getApplicationContext() );
-
-        // Y lo asignamos a una validable
-        String idPersona = miApp.getIdActual();
-
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        // Si presionan el botón de Guardar Persona
+        // Si presionan el botón de Guardar Evento
         if (id == R.id.addEvento ) {
 
             final String servicio = txtServicio.getSelectedItem().toString();
-            final String fecha    = btnFecha.getText().toString();
-            final String hora     = btnHora.getText().toString();
-            final String evento   = txtEvento.getText().toString();
-            final String lugar    = txtLugar.getText().toString();
+            final String fecha = btnFecha.getText().toString();
+            final String hora = btnHora.getText().toString();
+            final String evento = txtEvento.getText().toString();
+            final String lugar = txtLugar.getText().toString();
             final String observaciones = txtObservaciones.getText().toString();
+            final String status = txtStatus.getSelectedItem().toString();
+            final String resultadoEvento = txtResultadoEvento.getText().toString();
 
             // Validamos los campos obligatorios
-            if ( fecha.trim().length() == 0 || fecha.trim().matches("Fecha") ) {
-                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+            if (fecha.trim().length() == 0 || fecha.trim().matches("Fecha")) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
                 dlgAlert.setMessage("La fecha del evento es obligatoria");
                 dlgAlert.setTitle("FALTA INFORMACIÓN");
                 dlgAlert.setPositiveButton("Aceptar", null);
@@ -137,8 +178,8 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
                 return false;
             }
 
-            if ( hora.trim().length() == 0 || hora.trim().matches("Hora") ) {
-                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+            if (hora.trim().length() == 0 || hora.trim().matches("Hora")) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
                 dlgAlert.setMessage("La hora del evento es obligatoria");
                 dlgAlert.setTitle("FALTA INFORMACIÓN");
                 dlgAlert.setPositiveButton("Aceptar", null);
@@ -147,8 +188,8 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
                 return false;
             }
 
-            if ( evento.trim().length() == 0 ) {
-                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+            if (evento.trim().length() == 0) {
+                AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
                 dlgAlert.setMessage("Escribe al menos el nombre del evento");
                 dlgAlert.setTitle("FALTA INFORMACIÓN");
                 dlgAlert.setPositiveButton("Aceptar", null);
@@ -157,8 +198,14 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
                 return false;
             }
 
-            // Insertamos
-            dbManager.insertEvento( idPersona, servicio, fecha, hora, evento, lugar, observaciones );
+            // Si idServicio = 999999 es una alta ...
+            if ( idServicio == "999999" ) {
+                // Insertamos
+                dbManager.insertEvento(idPersona, servicio, fecha, hora, evento, lugar, observaciones);
+                // Si no, es un cambio
+            } else {
+                dbManager.updateEvento( idPersona, idServicio, fechaEvento, horaEvento, servicio, fecha, hora, evento, lugar, observaciones, status, resultadoEvento );
+            }
 
             // Refrescamos la pantalla principal
             Intent main = new Intent(AltaEventoActivity.this, EventosActivity.class)
@@ -199,30 +246,53 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
 
         dbManager = new DBManager(this);
         dbManager.open();
-        Cursor cursor = dbManager.selectEventoActual( idEvento );
+        Cursor cursor = dbManager.selectEventoActual( idPersona, idServicio, fechaEvento, horaEvento );
 
         // Recorremos el cursor si es que existe al menos un registro
         if ( cursor.moveToFirst() ) {
             //Recorremos el cursor hasta que no haya más registros
             do {
 
-                String[] columns = new String[] { "id", "idServicio", "nombreServicio", "fechaEvento", "horaEvento", "evento" };
-
+                String[] columns = new String[] { "id", "idServicio", "nombreServicio", "fechaEvento", "horaEvento", "evento", "lugar", "observaciones", "status", "resultadoEvento" };
                 String id = cursor.getString(0).trim();
                 String idServicio = cursor.getString(1).trim();
                 String nombreServicio = cursor.getString(2).trim();
                 String fecha = cursor.getString(3).trim();
                 String hora = cursor.getString(4).trim();
                 String evento = cursor.getString(5).trim();
+                String lugar = cursor.getString(6).trim();
+                String comentario = cursor.getString(7).trim();
+                String status = cursor.getString(8).trim();
+                String resultadoEvento = cursor.getString(9).trim();
 
-                //tableViewEventos.addBasicItem( evento, nombreServicio);
-                tableViewEventos.addBasicItem( fecha + " -> " + hora, nombreServicio);
+                //System.out.println( status );
+                //System.out.println( resultadoEvento );
 
-                // Agregamos al array la lista de IDs para poder identificar el que seleccionen
-                idEventoArrayList.add( id );
+                txtServicio.setSelection(((ArrayAdapter)txtServicio.getAdapter()).getPosition(nombreServicio));
+                btnFecha.setText(fecha);
+                btnHora.setText( hora );
+                if ( evento != null ) { txtEvento.setText( evento ); }
+                if ( lugar != null ) { txtLugar.setText( lugar ); }
+                if ( comentario != null ) { txtObservaciones.setText(comentario); }
+
+                txtStatus.setSelection(((ArrayAdapter)txtStatus.getAdapter()).getPosition(status));
+/*
+                switch(status) {
+                    case "Cumplido":
+                        txtStatus.setSelection(1);
+                        break;
+                    case "No se cumplió":
+                        txtStatus.setSelection(2);
+                        break;
+                    default:
+                        txtStatus.setSelection(0);
+                }
+*/
+                if ( resultadoEvento != null ) { txtResultadoEvento.setText(resultadoEvento); }
 
             } while( cursor.moveToNext() );
         }
+
 
     }
 

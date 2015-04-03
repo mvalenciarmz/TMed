@@ -18,7 +18,7 @@ public class EventosActivity extends ActionBarActivity {
     private DBManager dbManager;
 
     // Para mantener un array con los datos que se están mostrando en la tabla
-    private ArrayList<String> idEventoArrayList = new ArrayList<String>();
+    private ArrayList<String> idServicioArrayList = new ArrayList<String>();
     private ArrayList<String> fechaEventoArrayList = new ArrayList<String>();
     private ArrayList<String> horaEventoArrayList = new ArrayList<String>();
 
@@ -80,7 +80,7 @@ public class EventosActivity extends ActionBarActivity {
                 tableViewEventos.addBasicItem( fecha + " -> " + hora, nombreServicio);
 
                 // Agregamos al array la lista de IDs para poder identificar el que seleccionen
-                idEventoArrayList.add( id );
+                idServicioArrayList.add( idServicio );
                 fechaEventoArrayList.add( fecha );
                 horaEventoArrayList.add( hora );
 
@@ -100,9 +100,9 @@ public class EventosActivity extends ActionBarActivity {
             // Manejo de variables globales:
             TMed miApp = ( (TMed)getApplicationContext() );
             // Para mantener el ID del evento que están seleccionando
-            miApp.setIdEventoActual( idEventoArrayList.get(index) );
-            miApp.setFechaEventoActual( idEventoArrayList.get(index) );
-            miApp.setHoraEventoActual( idEventoArrayList.get(index) );
+            miApp.setIdServicioActual( idServicioArrayList.get(index) );
+            miApp.setFechaEventoActual( fechaEventoArrayList.get(index) );
+            miApp.setHoraEventoActual( horaEventoArrayList.get(index) );
 
             // Lanzamos la actividad
             Intent i = new Intent(EventosActivity.this, AltaEventoActivity.class);
@@ -128,13 +128,20 @@ public class EventosActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if ( id == R.id.editarPersona ) {
+
+            Intent i = new Intent(EventosActivity.this, AltaPersonaActivity.class);
+            startActivity(i);
+
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.addEvento ) {
 
             // Manejo de variables globales:
             TMed miApp = ( (TMed)getApplicationContext() );
             // En una alta, éste valor será 999999 ( asumimos que no llegarán a registrar dicho número de movimientos )
-            miApp.setIdActual(999999);
+            miApp.setIdServicioActual("999999");
 
             // Lanzamos la actividad
             Intent i = new Intent(EventosActivity.this, AltaEventoActivity.class);

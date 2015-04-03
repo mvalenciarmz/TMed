@@ -18,6 +18,17 @@
         <item>Sexo Masculino</item>
         <item>Sexo Femenino</item>
     </string-array>
+
+    <string-array name="status">
+        <item>Pendiente</item>
+        <item>Cumplido</item>
+        <item>No se cumplió</item>
+    </string-array>
+
+    <string name="lblStatus">STATUS DEL EVENTO</string>
+    <string name="lblResultadoEvento">RESULTADO DEL EVENTO</string>
+
+
     <string name="title_activity_eventos">EventosActivity</string>
     <string name="title_activity_alta_evento">AltaEventoActivity</string>
 

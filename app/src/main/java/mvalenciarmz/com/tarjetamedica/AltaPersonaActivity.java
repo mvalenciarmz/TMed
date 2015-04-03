@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,10 +16,14 @@ import android.widget.Spinner;
 import com.android.datetimepicker.date.DatePickerDialog;
 
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class AltaPersonaActivity extends ActionBarActivity implements DatePickerDialog.OnDateSetListener {
+
+    // Para saber si estamos en un cambio (UPDATE) o en una alta (INSERT)
+    private String idPersona;
 
     // Para el control que permite seleccionar una fecha
     private Calendar calendar;
@@ -68,6 +73,16 @@ public class AltaPersonaActivity extends ActionBarActivity implements DatePicker
         // Para la interacción con la base de datos
         dbManager = new DBManager(this);
         dbManager.open();
+
+        // Obtenemos el id del servicio actual ( si es una alta, valdrá 999999 )
+        TMed miApp = ( (TMed)getApplicationContext() );
+        idPersona = miApp.getIdActual();
+
+        // Si NO tiene el id de la persona a 0 entonces es un cambio, y hay que recuperar los datos
+        if ( !idPersona.equals("0") ) {
+            CargaDatosPersona();
+        }
+
 
 
     }
@@ -133,19 +148,26 @@ public class AltaPersonaActivity extends ActionBarActivity implements DatePicker
                 return false;
             }
 
-            // Checamos que el nombre no exista
-            if ( dbManager.existePersona( nombre ) > 0 ) {
-                AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-                dlgAlert.setMessage("El nombre ya está registrado");
-                dlgAlert.setTitle("YA EXISTE INFORMACIÓN");
-                dlgAlert.setPositiveButton("Aceptar", null);
-                dlgAlert.setCancelable(true);
-                dlgAlert.create().show();
-                return false;
+            // Checamos que el nombre no exista, siempre que sea un alta
+            if ( idPersona.equals("0") ) {
+                if (dbManager.existePersona(nombre) > 0) {
+                    AlertDialog.Builder dlgAlert = new AlertDialog.Builder(this);
+                    dlgAlert.setMessage("El nombre ya está registrado");
+                    dlgAlert.setTitle("YA EXISTE INFORMACIÓN");
+                    dlgAlert.setPositiveButton("Aceptar", null);
+                    dlgAlert.setCancelable(true);
+                    dlgAlert.create().show();
+                    return false;
+                }
             }
 
-            // Insertamos
-            dbManager.insertPersona( nombre, paterno, materno, sexo, numSegSocial, unidadMedica, horario, consultorio, fechaNacimiento, curp, tipoSangre, observaciones);
+            // Si id de persona = "0" es una alta ...
+            if ( idPersona.equals("0") ) {
+                dbManager.insertPersona( nombre, paterno, materno, sexo, numSegSocial, unidadMedica, horario, consultorio, fechaNacimiento, curp, tipoSangre, observaciones);
+            // Si no, es un cambio
+            } else {
+                dbManager.updatePersona( idPersona, nombre, paterno, materno, sexo, numSegSocial, unidadMedica, horario, consultorio, fechaNacimiento, curp, tipoSangre, observaciones );
+            }
 
             // Refrescamos la pantalla principal
             Intent main = new Intent(AltaPersonaActivity.this, TarjetaMedicaMainActivity.class)
@@ -171,6 +193,68 @@ public class AltaPersonaActivity extends ActionBarActivity implements DatePicker
         calendar.set(year, monthOfYear, dayOfMonth);
         //btnFecha.setText( dateFormat.format( calendar.getTime() ) );
         btnFecha.setText( dayOfMonth + "/" + nombreMes[monthOfYear] + "/" + year );
+
+    }
+
+    // Cargamos el registro de la persona actual, desde la tabla personas
+    private void CargaDatosPersona() {
+
+        dbManager = new DBManager(this);
+        dbManager.open();
+        Cursor cursor = dbManager.selectPersonaActual(idPersona);
+
+        // Recorremos el cursor si es que existe al menos un registro
+        if (cursor.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya más registros
+            do {
+
+                String nombre = cursor.getString(1).trim();
+                String paterno = cursor.getString(2).trim();
+                String materno = cursor.getString(3).trim();
+                String sexo = cursor.getString(4).trim();
+                String numSegSocial = cursor.getString(5).trim();
+                String unidadMedica = cursor.getString(6).trim();
+                String horario = cursor.getString(7).trim();
+                String consultorio = cursor.getString(8).trim();
+                String fechaNacimiento = cursor.getString(9).trim();
+                String curp = cursor.getString(10).trim();
+                String tipoSangre = cursor.getString(11).trim();
+                String observaciones = cursor.getString(12).trim();
+
+                txtNombre.setText(nombre);
+                txtPaterno.setText(paterno);
+                txtMaterno.setText(materno);
+                txtSexo.setSelection(((ArrayAdapter) txtSexo.getAdapter()).getPosition(sexo));
+                txtNumSegSocial.setText(numSegSocial);
+                txtUnidadMedica.setText(unidadMedica);
+                txtHorario.setSelection(((ArrayAdapter) txtHorario.getAdapter()).getPosition(horario));
+                txtConsultorio.setText(consultorio);
+                btnFechaNacimiento.setText(fechaNacimiento);
+                txtCurp.setText(curp);
+                txtTipoSangre.setText(tipoSangre);
+                txtObservaciones.setText(observaciones);
+
+                String nombreMes[] = {"ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"};
+
+                int dia;
+                String  mes;
+                int  ano;
+                int longitudFecha = fechaNacimiento.length();   // mes y año siempre iguales, pero día puede ser de un dígito o dos
+                if (longitudFecha == 11) {
+                    dia = Integer.parseInt( fechaNacimiento.substring( 0, 2 ) );
+                    mes = fechaNacimiento.substring( 3, 6 );
+                    ano = Integer.parseInt( fechaNacimiento.substring( 7 ) );
+                } else {
+                    dia = Integer.parseInt( fechaNacimiento.substring( 0, 1 ) );
+                    mes = fechaNacimiento.substring( 2, 5 );
+                    ano = Integer.parseInt(fechaNacimiento.substring(6));
+                }
+
+                int numMes = Arrays.asList(nombreMes).indexOf(mes);
+                calendar.set(ano, numMes, dia);
+
+            } while (cursor.moveToNext());
+        }
 
     }
 

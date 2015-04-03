@@ -16,6 +16,16 @@
         tools:context="mvalenciarmz.com.tarjetamedica.AltaEventoActivity"
         android:weightSum="1">
 
+        <TableRow android:layout_marginTop="30px">
+            <TextView
+                android:id="@+id/lblServicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SERVICIO A REGISTRAR"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
+        </TableRow>
+
         <TableRow>
             <Spinner
                 android:id="@+id/servicio"
@@ -45,6 +55,16 @@
         </TableRow>
 
         <TableRow android:layout_marginTop="30px">
+            <TextView
+                android:id="@+id/lblDescripcionEvento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DESCRIPCIÓN DEL EVENTO"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
+        </TableRow>
+
+        <TableRow android:layout_marginTop="30px">
             <EditText
                 android:id="@+id/evento"
                 android:layout_width="0dp"
@@ -54,6 +74,15 @@
                 android:inputType="text" />
         </TableRow>
 
+        <TableRow android:layout_marginTop="30px">
+            <TextView
+                android:id="@+id/lblLugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LUGAR DONDE SE REALIZARA"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
+        </TableRow>
         <TableRow android:layout_marginTop="30px">
             <EditText
                 android:id="@+id/lugar"
@@ -65,15 +94,72 @@
         </TableRow>
 
         <TableRow android:layout_marginTop="30px">
+            <TextView
+                android:id="@+id/lblComentarios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="COMENTARIOS"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
+        </TableRow>
+
+        <TableRow android:layout_marginTop="30px">
             <EditText
                 android:id="@+id/observaciones"
                 android:layout_height="wrap_content"
                 android:hint="Observaciones"
-                android:inputType="textMultiLine"
-                android:lines="3"
+                android:inputType="text"
                 android:layout_weight="1"
                 android:layout_width="fill_parent">
             </EditText>
+        </TableRow>
+
+        <TableRow android:layout_marginTop="30px">
+            <TextView
+                android:id="@+id/lblResultadoEvento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lblResultadoEvento"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
+        </TableRow>
+
+        <TableRow android:layout_marginTop="30px">
+            <EditText
+                android:id="@+id/resultadoEvento"
+                android:layout_height="wrap_content"
+                android:hint="Resultado del Evento"
+                android:inputType="text"
+                android:layout_weight="1"
+                android:layout_width="fill_parent">
+            </EditText>
+        </TableRow>
+
+        <TableRow android:layout_marginTop="30px">
+            <TextView
+                android:id="@+id/lblStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lblStatus"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
+            <Spinner
+                android:id="@+id/status"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:entries="@array/status">
+            </Spinner>
+        </TableRow>
+
+        <TableRow android:layout_marginTop="30px">
+            <TextView
+                android:id="@+id/lblEspacio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"/>
         </TableRow>
 
     </TableLayout>
