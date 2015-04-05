@@ -107,7 +107,7 @@ public class DBManager {
         contentValue.put( "horaEvento", hora );
         contentValue.put( "evento", evento );
         contentValue.put( "lugar", lugar );
-        contentValue.put( "status", "PENDIENTE");
+        contentValue.put( "status", "Pendiente");
         contentValue.put( "comentario", observaciones );
         contentValue.put( "resultadoEvento", "" );
 
@@ -144,6 +144,30 @@ public class DBManager {
 //        System.out.println( i );   // Nomás para saber qué regresa i
 
     }
+
+
+
+    // Para eliminar un evento en la base de datos
+    public void deleteEvento(String id, String servicioOriginal, String fechaOriginal, String horaOriginal ) {
+
+        // Eliminamos
+        String[] args = new String[]{id, servicioOriginal, fechaOriginal, horaOriginal};
+        database.delete("eventos", "id = ? AND idServicio = ? AND fechaEvento = ? AND horaEvento = ?", args);
+
+    }
+
+    // Para eliminar todos los eventos de la persona, y a la persona de la base de datos
+    public void deletePersona(String id ) {
+
+        // Eliminamos
+        String[] args = new String[]{id};
+        // Primero borramos todos sus eventos
+        database.delete("eventos", "id = ?", args);
+        // Luego a la persona
+        database.delete("personas", "id = ?", args);
+
+    }
+
 
 
 
@@ -220,11 +244,26 @@ public class DBManager {
 
 
     // Obtenemos todos los eventos que tengan un status PENDIENTE
-    public Cursor selectEventos( String idPersona ) {
+    public Cursor selectEventos( String idPersona, String status, String servicio ) {
 
-        //String[] columns = new String[] { "id", "idServicio", "nombreServicio", "fechaEvento", "horaEvento", "evento" };
-        //Cursor cursor = database.query("eventos", columns, null, null, null, null, null);
-        Cursor cursor = database.rawQuery("SELECT id, idServicio, nombreServicio, fechaEvento, horaEvento, evento FROM eventos INNER JOIN servicios USING( idServicio ) WHERE id = ?", new String[] {idPersona});
+        System.out.println( servicio );
+
+        Cursor cursor;
+        // Si quieren mostrar todos los eventos
+        if ( status.equals("") ) {
+            if ( servicio.equals("") ) {
+                cursor = database.rawQuery("SELECT id, idServicio, nombreServicio, fechaEvento, horaEvento, evento, status FROM eventos INNER JOIN servicios USING( idServicio ) WHERE id = ? ORDER BY fechaEvento, horaEvento", new String[] {idPersona});
+            } else {
+                cursor = database.rawQuery("SELECT id, idServicio, nombreServicio, fechaEvento, horaEvento, evento, status FROM eventos INNER JOIN servicios USING( idServicio ) WHERE id = ? AND TRIM( nombreServicio ) = ? ORDER BY fechaEvento, horaEvento", new String[] {idPersona, servicio});
+            }
+        } else {
+            if ( servicio.equals("") ) {
+                cursor = database.rawQuery("SELECT id, idServicio, nombreServicio, fechaEvento, horaEvento, evento, status FROM eventos INNER JOIN servicios USING( idServicio ) WHERE id = ? AND status = ? ORDER BY fechaEvento, horaEvento", new String[] {idPersona, status});
+            } else {
+                cursor = database.rawQuery("SELECT id, idServicio, nombreServicio, fechaEvento, horaEvento, evento, status FROM eventos INNER JOIN servicios USING( idServicio ) WHERE id = ? AND status = ? AND TRIM( nombreServicio ) = ? ORDER BY fechaEvento, horaEvento", new String[] {idPersona, status, servicio});
+            }
+        }
+
         if (cursor != null) {
             cursor.moveToFirst();
         }

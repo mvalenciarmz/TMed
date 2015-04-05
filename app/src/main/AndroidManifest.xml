@@ -5,6 +5,20 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- para la alarma del evento
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <service android:name=".Receiver2" android:enabled="true">
+        <intent-filter> <action android:name="NOTIFICATION_SERVICE" /></intent-filter>
+    </service>
+    <receiver android:name=".AlarmReceiver" >
+        <intent-filter>
+            <action android:name="NOTIFICATION_SERVICE" />
+        </intent-filter>
+    </receiver>
+    -->
+
     <application
         android:name=".TMed"
         android:allowBackup="true"

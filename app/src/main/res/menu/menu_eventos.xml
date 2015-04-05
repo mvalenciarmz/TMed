@@ -18,17 +18,80 @@
         app:showAsAction="always"/>
 
     <item
-        android:id="@+id/tipoEvento"
+        android:id="@+id/filtrarServicios"
         android:icon="@drawable/library"
         android:orderInCategory="100"
-        android:title="Eventos"
-        app:showAsAction="always"/>
+        android:title="Filtrar"
+        app:showAsAction="always">
+        <menu>
+            <group>
+                <item
+                    android:title="Filtrar por Servicios"
+                    android:enabled="false"
+                    android:checkable="false"/>
+                <item
+                    android:id="@+id/cintura"
+                    android:title="Medición de Cintura"/>
+                <item
+                    android:id="@+id/citas"
+                    android:title="Citas médicas"/>
+                <item
+                    android:id="@+id/estatura"
+                    android:title="Medición de Estatura"/>
+                <item
+                    android:id="@+id/glucosa"
+                    android:title="Medición de la Glucosa"/>
+                <item
+                    android:id="@+id/peso"
+                    android:title="Toma de Peso"/>
+                <item
+                    android:id="@+id/presionArterial"
+                    android:title="Toma de Presión Arterial"/>
+                <item
+                    android:id="@+id/prevencion"
+                    android:title="Prevención de Enfermedades"/>
+                <item
+                    android:id="@+id/vacunas"
+                    android:title="Vacunas"/>
+                <item
+                    android:id="@+id/todosServicios"
+                    android:title="Todos los Servicios"/>
+
+            </group>
+        </menu>
+    </item>
+
 
     <item
         android:id="@+id/filtrarEventos"
         android:icon="@drawable/ver"
         android:orderInCategory="100"
         android:title="Filtrar"
-        app:showAsAction="always"/>
+        app:showAsAction="always">
+        <menu>
+            <group>
+                <item
+                    android:title="Filtrar Eventos"
+                    android:enabled="false"
+                    android:checkable="false"/>
+                <item
+                    android:id="@+id/mostrarEventosPendientes"
+                    android:title="Mostrar eventos Pendientes"/>
+                <item
+                    android:id="@+id/mostrarEventosCumplidos"
+                    android:title="Mostrar eventos Cumplidos"/>
+                <item
+                    android:id="@+id/mostrarEventosNoCumplidos"
+                    android:title="Mostrar eventos No Cumplidos"/>
+                <item
+                    android:id="@+id/mostrarEventosTodos"
+                    android:title="Mostrar Todos los eventos"/>
+
+            </group>
+        </menu>
+    </item>
+
+
+
 
 </menu>

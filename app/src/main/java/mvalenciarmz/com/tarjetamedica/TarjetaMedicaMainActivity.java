@@ -17,8 +17,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import br.com.dina.ui.widget.UITableView;
@@ -60,7 +62,7 @@ https://github.com/nishanil/AndroidWear/tree/master/ServiceReminder
 http://androidideasblog.blogspot.co.uk/2011/07/alarmmanager-and-notificationmanager.html
 
  */
-
+/*
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.tarjetaazulfuerte)
@@ -89,7 +91,7 @@ http://androidideasblog.blogspot.co.uk/2011/07/alarmmanager-and-notificationmana
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 // mId allows you to update the notification later on.
         mNotificationManager.notify(1, mBuilder.build());
-
+*/
 
 
     }
@@ -127,8 +129,8 @@ http://androidideasblog.blogspot.co.uk/2011/07/alarmmanager-and-notificationmana
 
                 // En base a la fecha de nacimiento, calculamos la edad
                 String fechaNacimiento = cursor.getString(9);
-                Calendar c1 = GregorianCalendar.getInstance();
-                int anActual = Integer.valueOf(c1.getTime().toLocaleString().substring(7, 11));
+
+                int anActual = Integer.valueOf( new SimpleDateFormat("dd-MM-yyyy").format(new Date()).toString().substring(6) );
 
                 int longitudFecha = fechaNacimiento.length();   // mes y año siempre iguales, pero día puede ser de un dígito o dos
                 int anNacimiento;
@@ -151,10 +153,10 @@ http://androidideasblog.blogspot.co.uk/2011/07/alarmmanager-and-notificationmana
                 } else if (edad > 9 && edad <= 19) {
                     tableView.addBasicItem(R.drawable.tarjetaazul, nombre, totalEventos);
                 // Mujeres de 20 a 59 años
-                } else if ( sexo == "Femenino" && (edad > 19 && edad <= 59) ) {
+                } else if ( sexo.equals("Femenino") && (edad > 19 && edad <= 59) ) {
                     tableView.addBasicItem(R.drawable.tarjetarosa, nombre, totalEventos);
                 // hombres de 20 a 59 años
-                } else if (sexo == "Masculino" && (edad > 19 && edad <= 59)) {
+                } else if (sexo.equals("Masculino") && (edad > 19 && edad <= 59)) {
                     tableView.addBasicItem(R.drawable.tarjetaazulfuerte, nombre, totalEventos);
                 // adultos mayores
                 } else {

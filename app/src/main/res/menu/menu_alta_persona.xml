@@ -4,8 +4,16 @@
     tools:context="mvalenciarmz.com.tarjetamedica.AltaPersonaActivity">
 
     <item
+        android:id="@+id/deletePersona"
+        android:icon="@drawable/delete"
+        android:orderInCategory="100"
+        android:title="Eliminar"
+        android:text="Eliminar"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/addPersona"
-        android:icon="@drawable/listo"
+        android:icon="@drawable/check"
         android:orderInCategory="100"
         android:title="@string/title_guardar"
         android:text="Guardar"

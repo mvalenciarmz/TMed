@@ -1,6 +1,7 @@
 package mvalenciarmz.com.tarjetamedica;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.ActionBarActivity;
@@ -111,6 +112,33 @@ public class AltaPersonaActivity extends ActionBarActivity implements DatePicker
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+
+
+        // Si presionan el botón de Eliminar Evento
+        if (id == R.id.deletePersona ) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Borrar Persona")
+                    .setMessage("¿ Confirmas que deseas borrar a ésta Persona y todos sus eventos registrados ?")
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dbManager.deletePersona( idPersona );
+
+                            // Refrescamos la pantalla principal
+                            Intent main = new Intent(AltaPersonaActivity.this, TarjetaMedicaMainActivity.class)
+                                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                            // Lanzamos nuevamente la pantalla principal
+                            startActivity(main);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
+        }
+
         // Si presionan el botón de Guardar Persona
         if (id == R.id.addPersona) {
 

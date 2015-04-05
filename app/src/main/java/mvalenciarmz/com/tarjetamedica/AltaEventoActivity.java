@@ -1,6 +1,9 @@
 package mvalenciarmz.com.tarjetamedica;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -20,8 +23,11 @@ import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -129,12 +135,12 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
             lblStatus.setVisibility(View.GONE);
         }
 
-        lblServicio.setTextColor(Color.BLUE);
-        lblEvento.setTextColor(Color.BLUE);
-        lblLugar.setTextColor(Color.BLUE);
-        lblComentarios.setTextColor(Color.BLUE);
-        lblResultadoEvento.setTextColor(Color.BLUE);
-        lblStatus.setTextColor(Color.BLUE);
+        lblServicio.setTextColor(Color.GRAY);
+        lblEvento.setTextColor(Color.GRAY);
+        lblLugar.setTextColor(Color.GRAY);
+        lblComentarios.setTextColor(Color.GRAY);
+        lblResultadoEvento.setTextColor(Color.GRAY);
+        lblStatus.setTextColor(Color.GRAY);
 
     }
 
@@ -155,6 +161,34 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+
+        // Si presionan el botón de Eliminar Evento
+        if (id == R.id.deleteEvento ) {
+
+            new AlertDialog.Builder(this)
+                .setTitle("Borrar Evento")
+                .setMessage("¿ Confirmas que deseas borrar éste evento ?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dbManager.deleteEvento( idPersona, idServicio, fechaEvento, horaEvento);
+
+                        // Refrescamos la pantalla principal
+                        Intent main = new Intent(AltaEventoActivity.this, EventosActivity.class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        // Lanzamos nuevamente la pantalla principal
+                        startActivity(main);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+
+        }
+
+
+
         // Si presionan el botón de Guardar Evento
         if (id == R.id.addEvento ) {
 
@@ -206,6 +240,68 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
             } else {
                 dbManager.updateEvento( idPersona, idServicio, fechaEvento, horaEvento, servicio, fecha, hora, evento, lugar, observaciones, status, resultadoEvento );
             }
+
+// Esto será para la alarma que pondremos un día antes del evento
+            /*
+
+            String nombreMes[] = {"ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"};
+
+            int dia;
+            String  mes;
+            int  ano;
+            int longitudFecha = fecha.length();   // mes y año siempre iguales, pero día puede ser de un dígito o dos
+
+            if (longitudFecha == 11) {
+                dia = Integer.parseInt( fecha.substring( 0, 2 ) );
+                mes = fecha.substring( 3, 6 );
+                ano = Integer.parseInt( fecha.substring( 7 ) );
+            } else {
+                dia = Integer.parseInt( fecha.substring( 0, 1 ) );
+                mes = fecha.substring( 2, 5 );
+                ano = Integer.parseInt(fecha.substring(6));
+            }
+
+            int numMes = Arrays.asList(nombreMes).indexOf(mes);
+
+            // Calculamos la fecha de hoy
+            Date dateHoy = new Date();
+
+            // Obtenemos la fecha del evento
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            Date dateEvento = new Date();
+            try {
+                dateEvento = formatter.parse(dia+"-"+ ( numMes+1 ) +"-"+ano);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            // Obtenemos los días que faltan entre el día de hoy la fecha del evento
+            int diasParaElEvento = ((int)((dateEvento.getTime()/(24*60*60*1000)) -(int)(dateHoy.getTime()/(24*60*60*1000))));
+
+            // Si faltan días para el evento, lanzamos una alarma
+            // ESTE USAMOS ---> http://stackoverflow.com/questions/28017943/android-how-to-set-a-notification-to-a-specific-date-in-the-future
+            // solo lo dejamos por referencia : http://blog.blundell-apps.com/notification-for-a-user-chosen-time/
+            if ( diasParaElEvento >= 0 ) {
+                // 0 días significa que falta un día, pero como la alarma la queremos un día antes lo dejamos así
+                Calendar alarmaUnDiaAntes = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                calendar.set(Calendar.HOUR_OF_DAY, 9);
+                calendar.set(Calendar.MINUTE, 48);
+
+                alarmaUnDiaAntes.add(Calendar.DATE, diasParaElEvento);
+
+                System.out.println( "lanzamos alarma");
+
+                Intent intent = new Intent(this, Receiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 001, intent, 0);
+
+                AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
+                am.set(AlarmManager.RTC_WAKEUP, alarmaUnDiaAntes.getTimeInMillis(), pendingIntent);
+
+            }
+
+*/
+
 
             // Refrescamos la pantalla principal
             Intent main = new Intent(AltaEventoActivity.this, EventosActivity.class)
@@ -267,6 +363,32 @@ public class AltaEventoActivity extends ActionBarActivity implements DatePickerD
 
                 //System.out.println( status );
                 //System.out.println( resultadoEvento );
+
+                String nombreMes[] = {"ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"};
+
+                int dia;
+                String  mes;
+                int  ano;
+                int longitudFecha = fecha.length();   // mes y año siempre iguales, pero día puede ser de un dígito o dos
+
+                if (longitudFecha == 11) {
+                    dia = Integer.parseInt( fecha.substring( 0, 2 ) );
+                    mes = fecha.substring( 3, 6 );
+                    ano = Integer.parseInt( fecha.substring( 7 ) );
+                } else {
+                    dia = Integer.parseInt( fecha.substring( 0, 1 ) );
+                    mes = fecha.substring( 2, 5 );
+                    ano = Integer.parseInt(fecha.substring(6));
+                }
+
+                int numMes = Arrays.asList(nombreMes).indexOf(mes);
+
+                // Ponemos la fecha del evento en el boton y el control de calendario para que la tenga al cargar
+                Calendar calendar;
+                calendar = Calendar.getInstance();
+                calendar.set(ano, numMes, dia);
+
+
 
                 txtServicio.setSelection(((ArrayAdapter)txtServicio.getAdapter()).getPosition(nombreServicio));
                 btnFecha.setText(fecha);

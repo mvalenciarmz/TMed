@@ -10,6 +10,7 @@
         android:title="@string/title_masPersona"
         app:showAsAction="always"/>
 
+    <!--
     <item
         android:id="@+id/masGastos"
         android:icon="@drawable/masgastos"
@@ -67,5 +68,6 @@
     </group>
     </menu>
 </item>
+-->
 
 </menu>
